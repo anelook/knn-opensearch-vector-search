@@ -1,13 +1,19 @@
 const { client, indexName: index } = require("./config");
 const { logTitles } = require("./helpers");
+const { getSingle } = require("./embedding");
 
-
-module.exports.knn = (field, query) => {
+/**
+ * run-func search knn "alcohol"
+ */
+module.exports.knn = async (text) => {
+  const vector = await getSingle(text);
+  console.log('GOT vector', vector);
   const body = {
     query: {
-      match: {
-        [field]: {
-          query,
+      knn: {
+        embedding: {
+          vector,
+          "k": 2
         },
       },
     },

@@ -1,6 +1,7 @@
 const { client, indexName, recipes } = require("./config");
 const { logBody } = require("./helpers");
 const fs = require('fs');
+const recipesWithEmbeddings = require("./recipes_with_embeddings.json");
 
 /**
  * Indexing data from json file with recipes containing embeddings.
@@ -30,6 +31,29 @@ module.exports.populate = () => {
     console.log(body.length)
      client.bulk({ refresh: true, body }, logBody);
   // }
+};
+
+/**
+ * Indexing data from json file with recipes.
+ * Format: action \n document \n action \n document ...
+ * run-func index injectData
+ */
+module.exports.injectData = () => {
+  console.log(`Ingesting data: ${recipesWithEmbeddings.length} recipes`);
+  const requestSize =8000;
+  const numOfChunks = recipesWithEmbeddings.length / requestSize;
+  for(let i = 0; i < numOfChunks; i++) {
+    const chunk = recipesWithEmbeddings.slice(i * requestSize, (i + 1)*requestSize);
+    console.log(chunk.length);
+    const body = chunk.flatMap(recipe => [
+      { index: { _index: indexName } },
+      recipe,
+    ]);
+
+    client.bulk({ refresh: true, body }, logBody);
+    console.log('Sent chunk #', i);
+  }
+
 };
 
 

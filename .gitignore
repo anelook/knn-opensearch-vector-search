@@ -1,0 +1,6 @@
+.env
+full_format_recipes.json
+recipes_clean.json
+embeddings.csv
+recipes_with_embeddings.json
+node_modules/
