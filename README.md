@@ -49,8 +49,19 @@ PUT recipes
     }
   }
 }
-```
 
+
+```
+You can also add it by running `run-func index createIndexWithMapping`.
+
+## Populate index
+
+To bring the data from `recipes_with_embeddings.json` run `run-func index indexData`. Since we're adding quite a bit body of data, the method will divide that into several separate requests. You can also check the updated mapping once the data is added to the index with `run-func index getMapping`.
+
+
+## Search
+
+To search run `run-func search knn "description for what you're looking for"`. This method is located in `search.js`. It will first request the embedding for your query and then use that embedding to find most relevant results in the index.
 
 
 
